@@ -43,6 +43,9 @@ class BurgerBuilder extends Component{
 
     removeInredientHandler = (type) => {
         const oldCount = this.state.ingredients[type];
+        if (oldCount <= 0) {
+            return;
+        }
         const updatedCount = oldCount - 1;
         const updatedIngredients = {
             ...this.state.ingredients
@@ -57,6 +60,12 @@ class BurgerBuilder extends Component{
     };
 
     render() {
+        const disabledInfo = {
+            ...this.state.ingredients
+        };
+        for (let key in disabledInfo) {
+            disabledInfo[key] = disabledInfo[key] <= 0
+        }
         return (
             <Aux>
                 {/*tu będzie wizualizacja Burgera*/}
@@ -64,7 +73,8 @@ class BurgerBuilder extends Component{
                 {/*//tu będzie panel zarządzający usuwaniem i dodawaniem skłądników*/}
                 <BuildControls
                     addedIngredients={this.addIngredientHandler}
-                    removedIngredients={this.removeInredientHandler}/>
+                    removedIngredients={this.removeInredientHandler}
+                    disabled={disabledInfo}/>
             </Aux>
         );
     }
