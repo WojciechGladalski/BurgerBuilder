@@ -1,1 +1,3 @@
-My first fully front-end application with using React.
+# Burger Builder
+
+React application, where you can build your own burger with available ingredients.
