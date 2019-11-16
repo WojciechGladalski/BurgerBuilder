@@ -12,7 +12,7 @@ const INGREDIENTS_PRICES = {
     bacon: 0.7
 };
 
-class BurgerBuilder extends Component{
+class BurgerBuilder extends Component {
     //ALTERNATYWA DLA STATE:
     // constructor(props) {
     //     super(props);
@@ -30,7 +30,7 @@ class BurgerBuilder extends Component{
         purchasing: false
     };
 
-    updatePurchaseState (ingredients) {
+    updatePurchaseState(ingredients) {
         // const ingredients = {
         //     ...this.state.ingredients
         // };
@@ -87,6 +87,10 @@ class BurgerBuilder extends Component{
         this.setState({purchasing: false});
     }
 
+    purchaseContinueHandler = () => {
+        alert("You continue!");
+    }
+
     render() {
         const disabledInfo = {
             ...this.state.ingredients
@@ -97,10 +101,14 @@ class BurgerBuilder extends Component{
         return (
             <Aux>
                 <Modal show={this.state.purchasing} modalClosed={this.purchaseCancelHandler}>
-                    <OrderSummary ingredients={this.state.ingredients}/>
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                        price={this.state.totalPrice}
+                        purchaseCancelled={this.purchaseCancelHandler}
+                        purchaseContinued={this.purchaseContinueHandler}/>
                 </Modal>
                 {/*tu będzie wizualizacja Burgera*/}
-                <Burger ingredients={this.state.ingredients} />
+                <Burger ingredients={this.state.ingredients}/>
                 {/*//tu będzie panel zarządzający usuwaniem i dodawaniem skłądników*/}
                 <BuildControls
                     addedIngredients={this.addIngredientHandler}
@@ -108,7 +116,7 @@ class BurgerBuilder extends Component{
                     disabled={disabledInfo}
                     purchaseble={this.state.purchaseble}
                     ordered={this.purchaseHandler}
-                    price={this.state.totalPrice} />
+                    price={this.state.totalPrice}/>
             </Aux>
         );
     }
