@@ -11,19 +11,25 @@ const withErrorHandler = (WrappedComponent, axios) => {
         }
 
         componentWillMount() {
-            axios.interceptors.request.use(req => {
+            this.reqInterceptor = axios.interceptors.request.use(req => {
                 this.setState({error: null});
                 return req;
             });
             //Powyżej - przez oczekiwaniem odpowiedzi o ewentualnym błędzie resetujemy obiekt error, żeby dostać w aktualną
             // informację w response poniżej
-            axios.interceptors.response.use(res => res, error => {
+            this.resInterceptor = axios.interceptors.response.use(res => res, error => {
                 this.setState({error: error});
                 //Powyżęj - pierwszy error to ten ze state, domyślnie ustawiony jako null ponieważ normalnie nie powinno być
                 //błędu. drugi error to argument: błąd przesłany z firebase (lub innej bazy danych). W efekcie nasz programowy
                 //łapacz błędów stworzony w state wyłapuje ewentualny błąd przesłany nam z zewnątrz.
                 //res => res - to skrócona forma returna (patrz na req wyżej)
             });
+        }
+
+        //usuwam interceptory w celu zwolnienia miejsca w pamięci
+        componentWillUnmount() {
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.response.eject(this.resInterceptor);
         }
 
         errorConfirmedHandler = () => {
