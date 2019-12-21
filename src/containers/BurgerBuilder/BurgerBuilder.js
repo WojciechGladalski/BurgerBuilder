@@ -99,37 +99,38 @@ class BurgerBuilder extends Component {
 
     purchaseContinueHandler = () => {
         //alert("You continue!");
-        this.setState({
-            loading: true
-        })
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Robert Sawyer',
-                address: {
-                    street: 'Jagiellonska 13',
-                    zipCode: '97-500',
-                    country: 'Poland'
-                },
-                email: 'sawyer@wp.pl'
-            },
-            deliveryMethod: 'fastest'
-        }
-        axios.post('orders.json', order)
-            .then(response => {
-                this.setState({
-                    loading: false,
-                    purchasing: false
-                })
-            })
-            .catch(error => {
-                this.setState({
-                    loading: false,
-                    purchasing: false
-                })
-            });
-    }
+        // this.setState({
+        //     loading: true
+        // })
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price: this.state.totalPrice,
+        //     customer: {
+        //         name: 'Robert Sawyer',
+        //         address: {
+        //             street: 'Jagiellonska 13',
+        //             zipCode: '97-500',
+        //             country: 'Poland'
+        //         },
+        //         email: 'sawyer@wp.pl'
+        //     },
+        //     deliveryMethod: 'fastest'
+        // }
+        // axios.post('orders.json', order)
+        //     .then(response => {
+        //         this.setState({
+        //             loading: false,
+        //             purchasing: false
+        //         })
+        //     })
+        //     .catch(error => {
+        //         this.setState({
+        //             loading: false,
+        //             purchasing: false
+        //         })
+        //     });
+        this.props.history.push('/checkout');
+    };
 
     render() {
         const disabledInfo = {
