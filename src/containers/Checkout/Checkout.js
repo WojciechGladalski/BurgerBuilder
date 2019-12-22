@@ -12,16 +12,27 @@ class Checkout extends Component {
             cheese: 1,
             bacon: 1
         }
+    };
 
+    componentDidMount() {
+        const query = new URLSearchParams(this.props.location.search);
+        const ingredients = {};
+        for (let param of query.entries()) {
+            //['salad', '1']
+            //przez plusa konwertujemy ze stringa na liczbę
+            ingredients[param[0]] = +param[1];
+        }
+        //przekazuję ingrediencje z burgerbuildera do checkouta i obrazek burgera jest teraz taki jak wygląda zamówienie
+        this.setState({ingredients: ingredients});
     }
 
     checkoutCancelledHandler = () => {
         this.props.history.goBack();
-    }
+    };
 
     checkoutContinuedHandler = () => {
         this.props.history.replace('/checkout/contact-data');
-    }
+    };
 
     render() {
         return (
