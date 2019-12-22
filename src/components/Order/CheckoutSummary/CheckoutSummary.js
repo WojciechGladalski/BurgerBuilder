@@ -16,10 +16,10 @@ const checkoutSummary = (props) => {
             {/*btnType i clicked bierze się z komponentu Button*/}
             <Button
                 btnType="Danger"
-                clicked>CANCEL</Button>
+                clicked={props.checkoutCancelled}>CANCEL</Button>
             <Button
                 btnType="Success"
-                clicked>CONTINUE</Button>
+                clicked={props.checkoutContinued}>CONTINUE</Button>
         </div>
     );
 };
