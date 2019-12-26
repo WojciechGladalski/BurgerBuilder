@@ -42,7 +42,9 @@ class ContactData extends Component {
                 this.setState({
                     loading: false
                 });
-                
+                //dzieki temu po złożeniu zamówienia przekieruje nas z powrotem do głównej
+                //strony (reszta w checkout - props w Route -> render)
+                this.props.history.push('/');
             })
             .catch(error => {
                 this.setState({
