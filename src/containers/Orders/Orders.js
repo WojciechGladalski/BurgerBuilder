@@ -32,8 +32,12 @@ class Orders extends Component {
     render() {
         return (
             <div>
-                <Order/>
-                <Order/>
+                {this.state.orders.map(order => (
+                    //key to w tym przypadku id z firebase tak samo jak ingredients i price
+                    <Order key={order.id}
+                    ingredients={order.ingredients}
+                    price={order.price}/>
+                ))}
             </div>
         );
     }
