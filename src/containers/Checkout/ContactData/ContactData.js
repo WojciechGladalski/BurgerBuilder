@@ -9,11 +9,49 @@ import axios from '../../../axios-orders';
 class ContactData extends Component {
 
     state = {
-        name: '',
-        email: '',
-        address: {
-            street: '',
-            city: ''
+        orderForm: {
+            name: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your Name'
+                },
+                value: ''
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Your Mail'
+                },
+                value: ''
+            },
+            street: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Street'
+                },
+                value: ''
+            },
+            city: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'City'
+                },
+                value: ''
+            },
+            deliveryMethod: {
+                elementType: 'select',
+                elementConfig: {
+                    options: [
+                        {value: 'fastest', displayValue: 'Fastest'},
+                        {value: 'cheapest', displayValue: 'Cheapest'}
+                    ]
+                },
+                value: ''
+            }
         },
         loading: false
     };
@@ -23,20 +61,18 @@ class ContactData extends Component {
         event.preventDefault();
         this.setState({
             loading: true
-        })
+        });
+        //tworzymy pusty obiekt, do którego wrzucimy dane uzytkownika
+        const formData = {};
+        for (let formElementIdentifier in this.state.orderForm) {
+            //rozpoznajemy rodzaj inputa i wrzucamy tam wartość wprowadzona przez usera
+            // (TYLKO WARTOŚĆ, config i type nas nie interesują), po czym dodajemy stała formData do stałej order poniżej
+            formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
+        }
         const order = {
             ingredients: this.props.ingredients,
             price: this.props.price,
-            customer: {
-                name: 'Robert Sawyer',
-                address: {
-                    street: 'Jagiellonska 13',
-                    zipCode: '97-500',
-                    country: 'Poland'
-                },
-                email: 'sawyer@wp.pl'
-            },
-            deliveryMethod: 'fastest'
+            customerData: formData
         };
         axios.post('orders.json', order)
             .then(response => {
@@ -55,14 +91,53 @@ class ContactData extends Component {
         console.log(this.props.ingredients);
     };
 
+    //inputIdentifier to parametr po którym metoda rozpozna o który input chodzi. PONIŻEJ do metody przesyłamy formElement.id, co
+    //jest unikalną nazwą tego inputa (pętla w render()).
+    inputChangedHandler = (event, inputIdentifier) => {
+        // console.log(event.target.value);
+
+        //robimy klon obiektu orderForm (za pomocą ...)
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        };
+        //tworzymy stałą pomocniczą, żeby zidentyfikować konkretny input w obiekcie orderForm (za pomocą inputIndentifier)
+        const updatedFormElement = {
+            ...updatedOrderForm[inputIdentifier]
+        };
+
+        //chcemy pobrać wartośc od użytkownika (wpisywany w inpucie tekst) i podstawiamy go w stałej pomocniczej w value
+        //(stała pomocnicza updatedFormElement jest klonem orderForm, więc posiada te same składowe, w tym value)
+        updatedFormElement.value = event.target.value;
+
+        //identyfikujemy konkretnego inputa w klonie orderForm i zamieniamy jego zawartość zawartościa stałej pomocniczej
+        //updatedFormElement, a konkretnie value (pozostałe składowe sa bez zmian ponieważ są klonami orderForm a
+        //zmienialiśmy tylko value
+        updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+        //ustawiamy state na nowo, z danymi podanymi w formularzu przez użutkownika
+        this.setState({orderForm: updatedOrderForm});
+    };
+
     render() {
+        const formElementsArray = [];
+        for (let key in this.state.orderForm) {
+            formElementsArray.push({
+                    id: key,
+                    config: this.state.orderForm[key]
+                }
+            );
+        }
         let form = (
-            <form>
-                <Input inputtype="input" type="text" name="name" placeholder='Your Name'/>
-                <Input inputtype="input" type="email" name="email" placeholder='Your Mail'/>
-                <Input inputtype="input" type="text" name="street" placeholder='Your Street'/>
-                <Input inputtype="input" type="text" name="city" placeholder='Your City'/>
-                <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+            <form onSubmit={this.orderHandler}>
+                {formElementsArray.map(formElement => (
+                    <Input
+                        key={formElement.id}
+                        elementType={formElement.config.elementType}
+                        elementConfig={formElement.config.elementConfig}
+                        value={formElement.config.value}
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
+                ))}
+                <Button btnType="Success">ORDER</Button>
             </form>
         );
         if (this.state.loading) {

@@ -8,7 +8,7 @@ const checkoutSummary = (props) => {
 
     return (
         <div className={classes.CheckoutSummary}>
-            <h1>Hi</h1>
+            <h1>Enjoy your burger. I hope it will taste well!</h1>
             <div style={{width: '100%', margin: 'auto'}}>
                 {/*props.ingredents bierze się z componentu Burger gdzie ustawiamy Object.keys jako ingredients*/}
                 <Burger ingredients={props.ingredients}/>
