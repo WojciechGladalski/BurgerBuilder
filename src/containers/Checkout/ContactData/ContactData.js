@@ -83,12 +83,39 @@ class ContactData extends Component {
         console.log(this.props.ingredients);
     };
 
+    //inputIdentifier to parametr po którym metoda rozpozna o który input chodzi. PONIŻEJ do metody przesyłamy formElement.id, co
+    //jest unikalną nazwą tego inputa (pętla w render()).
+    inputChangedHandler = (event, inputIdentifier) => {
+        // console.log(event.target.value);
+
+        //robimy klon obiektu orderForm (za pomocą ...)
+        const updatedOrderForm = {
+            ...this.state.orderForm
+        };
+        //tworzymy stałą pomocniczą, żeby zidentyfikować konkretny input w obiekcie orderForm (za pomocą inputIndentifier)
+        const updatedFormElement = {
+            ...updatedOrderForm[inputIdentifier]
+        };
+
+        //chcemy pobrać wartośc od użytkownika (wpisywany w inpucie tekst) i podstawiamy go w stałej pomocniczej w value
+        //(stała pomocnicza updatedFormElement jest klonem orderForm, więc posiada te same składowe, w tym value)
+        updatedFormElement.value = event.target.value;
+
+        //identyfikujemy konkretnego inputa w klonie orderForm i zamieniamy jego zawartość zawartościa stałej pomocniczej
+        //updatedFormElement, a konkretnie value (pozostałe składowe sa bez zmian ponieważ są klonami orderForm a
+        //zmienialiśmy tylko value
+        updatedOrderForm[inputIdentifier] = updatedFormElement;
+
+        //ustawiamy state na nowo, z danymi podanymi w formularzu przez użutkownika
+        this.setState({orderForm: updatedOrderForm});
+    };
+
     render() {
         const formElementsArray = [];
         for (let key in this.state.orderForm) {
             formElementsArray.push({
-                id: key,
-                config: this.state.orderForm[key]
+                    id: key,
+                    config: this.state.orderForm[key]
                 }
             );
         }
@@ -99,7 +126,8 @@ class ContactData extends Component {
                         key={formElement.id}
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
-                        value={formElement.config.value}/>
+                        value={formElement.config.value}
+                        changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
             </form>
