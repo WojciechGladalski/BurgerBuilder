@@ -166,7 +166,7 @@ class ContactData extends Component {
         //tutaj ustawiamy walidację, czy pola zostały poprawnie wypełnione - sprawdzi to metoda checkvalidity
         updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
         console.log(updatedFormElement);
-        
+
         //identyfikujemy konkretnego inputa w klonie orderForm i zamieniamy jego zawartość zawartościa stałej pomocniczej
         //updatedFormElement, a konkretnie value (pozostałe składowe sa bez zmian ponieważ są klonami orderForm a
         //zmienialiśmy tylko value
