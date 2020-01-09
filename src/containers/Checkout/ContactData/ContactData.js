@@ -16,7 +16,12 @@ class ContactData extends Component {
                     type: 'text',
                     placeholder: 'Your Name'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             email: {
                 elementType: 'input',
@@ -24,7 +29,12 @@ class ContactData extends Component {
                     type: 'email',
                     placeholder: 'Your Mail'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             street: {
                 elementType: 'input',
@@ -32,7 +42,27 @@ class ContactData extends Component {
                     type: 'text',
                     placeholder: 'Street'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
+            },
+            zipCode: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Zip Code'
+                },
+                value: '',
+                validation: {
+                    required: true,
+                    minLength: 5,
+                    maxLength: 6
+                },
+                valid: false,
+                touched: false
             },
             city: {
                 elementType: 'input',
@@ -40,7 +70,12 @@ class ContactData extends Component {
                     type: 'text',
                     placeholder: 'City'
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false,
+                touched: false
             },
             deliveryMethod: {
                 elementType: 'select',
@@ -50,7 +85,11 @@ class ContactData extends Component {
                         {value: 'cheapest', displayValue: 'Cheapest'}
                     ]
                 },
-                value: ''
+                value: '',
+                validation: {
+                    required: true
+                },
+                valid: false
             }
         },
         loading: false
@@ -91,6 +130,26 @@ class ContactData extends Component {
         console.log(this.props.ingredients);
     };
 
+    checkValidity(value, rules) {
+        let isValid = true;
+
+        if (rules.required) {
+            //drugi warunek jest po to, żeby przy ostatnim ifie sprawdzało, czy poprzednie też zopstały spełnione,
+            //czyli ten warunek wymaga poprawnośc wszystkich pól
+            isValid = value.trim() !== '' && isValid;
+        }
+
+        if (rules.minLength) {
+            isValid = value.length >= rules.minLength && isValid;
+        }
+
+        if (rules.maxLength) {
+            isValid = value.length <= rules.maxLength && isValid;
+        }
+
+        return isValid;
+    }
+
     //inputIdentifier to parametr po którym metoda rozpozna o który input chodzi. PONIŻEJ do metody przesyłamy formElement.id, co
     //jest unikalną nazwą tego inputa (pętla w render()).
     inputChangedHandler = (event, inputIdentifier) => {
@@ -108,6 +167,13 @@ class ContactData extends Component {
         //chcemy pobrać wartośc od użytkownika (wpisywany w inpucie tekst) i podstawiamy go w stałej pomocniczej w value
         //(stała pomocnicza updatedFormElement jest klonem orderForm, więc posiada te same składowe, w tym value)
         updatedFormElement.value = event.target.value;
+
+        //tutaj ustawiamy walidację, czy pola zostały poprawnie wypełnione - sprawdzi to metoda checkvalidity
+        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+        console.log(updatedFormElement);
+
+        //ustawiamy ten parametr gdy użytkownik kliknie na pole i wtedy dopiero pokazuje walidację poprzez podświetlenie
+        updatedFormElement.touched = true;
 
         //identyfikujemy konkretnego inputa w klonie orderForm i zamieniamy jego zawartość zawartościa stałej pomocniczej
         //updatedFormElement, a konkretnie value (pozostałe składowe sa bez zmian ponieważ są klonami orderForm a
@@ -135,6 +201,9 @@ class ContactData extends Component {
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
+                        invalid={!formElement.config.valid}
+                        shouldValidate={formElement.config.validation}
+                        touched={formElement.config.touched}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
                 ))}
                 <Button btnType="Success">ORDER</Button>
